@@ -7,25 +7,49 @@ import java.util.Random;
 
 /**
  * Created by alex on 30.10.15.
+ * @author MrChebik
+ * @version 0.4.1
  */
 
 public class Main extends JPanel {
+    /**
+     * Во время паузы запрещаем менять направление
+     */
     int pause_key = 0;
+
+    /**
+     * Во время движения, запрещаем обрабатывать более 1 раза нажатия W, A, S, D, или аналогичные для стрелок
+     */
     int pause_key_timer = 1;
+
+    /**
+     * Для паузы
+     */
     static int start_game = 0;
 
+    /**
+     * Для генерации яблок
+     */
     int signal = 1;
     int signal1 = 0;
 
+    /**
+     * Значение прозрачности
+     */
     float over_int = 0;
 
+    /**
+     * Переменная необходима лишь 1 раз, для корректного отображения Аркады
+     */
     int lvl = 0;
-
 
     static int col_score = 0;
     int best_score = 0;
     int best_length = 0;
 
+    /**
+     * Узнаем название ОС
+     */
     static String OSname = System.getProperty("os.name");
     static int OS = 0, OS1 = 0, OS2 = 0;
 
@@ -63,14 +87,34 @@ public class Main extends JPanel {
     Apple a = new Apple(new Random().nextInt(19), new Random().nextInt(19));
     Apple2 b = new Apple2(new Random().nextInt(19), new Random().nextInt(19));
 
+    /**
+     * Масштаб клетки X, Y
+     */
     static final int SCALE = 32;
+
+    /**
+     * Кол-во клеток
+     */
     static final int WIDTH = 20;
     static final int HEIGHT = 20;
+
     static int SPEED = 175;
+
+    /**
+     * Скорость до телепорта
+     */
     int SPEED_TELEPORT = 4000;
 
+    /**
+     * Появление и исчезновение надписи: GAME OVER
+     * @since 0.2
+     */
     Timer tick_tack = new Timer(1000, e -> game_over.setVisible(game_over.isVisible() ? false : true));
 
+    /**
+     * Таймер до телепорта яблок, если активирована модификация - Teleportation of Apple
+     * @since 0.3
+     */
     Timer teleporting = new Timer(SPEED_TELEPORT, e -> {
         getSpeed();
         a.random();
@@ -81,6 +125,10 @@ public class Main extends JPanel {
         }
     });
 
+    /**
+     * Отрисовка анимации - затухание
+     * @since 0.4
+     */
     Timer over_time_dark = new Timer(10, e -> {
         if (over_int > 0.75) {
             this.over_time_dark.stop();
@@ -98,6 +146,10 @@ public class Main extends JPanel {
         }
     });
 
+    /**
+     * Отрисовка анимации - "разжигание"
+     * @since 0.4
+     */
     Timer over_time_lightly = new Timer(10, e -> {
         if (over_int < 0.01) {
             this.over_time_lightly.stop();
@@ -115,6 +167,9 @@ public class Main extends JPanel {
         }
     });
 
+    /**
+     * Основная отрисовка
+     */
     Timer t = new Timer(SPEED, e -> {
         s.move();
         if (classic.isSelected()) {
@@ -128,6 +183,10 @@ public class Main extends JPanel {
             s.eats();
         if (hard.isSelected() && hard.isEnabled())
             wall();
+
+        /**
+         * Яблоко съето
+         */
         if ((s.snakeX[0] == a.posX && s.snakeY[0] == a.posY) || (s.snakeX[0] == b.posX && s.snakeY[0] == b.posY && two.isSelected() && two.isEnabled())) {
             s.length++;
             if (s.snakeX[0] == a.posX && s.snakeY[0] == a.posY) {
@@ -157,10 +216,8 @@ public class Main extends JPanel {
                 SPEED -= 4;
                 this.t.setDelay(SPEED);
             }
-
             if (sound.isSelected())
                 new addThread_Apple().start();
-
             if (classic.isSelected())
                 check_length();
             if (arcade.isSelected())
@@ -173,6 +230,10 @@ public class Main extends JPanel {
         if (!teleport.isSelected() || !teleport.isEnabled())
             teleporting.stop();
 
+        /**
+         * WIN
+         * @since 0.3
+         */
         if (s.length == 400) {
             this.t.stop();
             if (teleporting.isRunning())
@@ -265,6 +326,10 @@ public class Main extends JPanel {
             else
                 g2.fillRect(b.posX * SCALE + 1, b.posY * SCALE + 1, SCALE - 1, SCALE - 1);
 
+        /**
+         * Анимация затухания и наоборот
+         * @since 0.4
+         */
         g2.setColor(new Color(0, 0, 0));
         AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, over_int);
         g2.setComposite(alphaComposite);
@@ -273,6 +338,11 @@ public class Main extends JPanel {
 
     Main() {
         a_rerandom();
+
+        /**
+         * Меню бар
+         * @since 0.2
+         */
         menu.add(file);
         file.add(new_game);
         file.addSeparator();
@@ -418,8 +488,9 @@ public class Main extends JPanel {
         menu.add(best_length_player);
         menu.add(best_score_player);
         best_score_player.setVisible(false);
-        about.addActionListener(e -> JOptionPane.showMessageDialog(null, "Version:      0.4\nDeveloper:  MrChebik", "About", JOptionPane.PLAIN_MESSAGE));
+        about.addActionListener(e -> JOptionPane.showMessageDialog(null, "Version:      0.4.1\nDeveloper:  MrChebik", "About", JOptionPane.PLAIN_MESSAGE));
         new_game.addActionListener(e -> start_anim_tick());
+
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -554,6 +625,10 @@ public class Main extends JPanel {
         tick_tack.start();
     }
 
+    /**
+     * Аркада-Normal
+     * @since  0.3
+     */
     void setNormal() {
         SPEED = 200;
         if (!easy.isSelected() && !hard.isSelected())
@@ -564,6 +639,10 @@ public class Main extends JPanel {
         hard.setSelected(false);
     }
 
+    /**
+     * Проверка на скорость => изменение таймера до телепорта, при определенном значении SPEED
+     * @since  0.4
+     */
     void getSpeed() {
         if (SPEED == 200)
             SPEED_TELEPORT = 4000;
@@ -579,6 +658,11 @@ public class Main extends JPanel {
         teleporting.setInitialDelay(SPEED_TELEPORT);
     }
 
+    /**
+     * Ecли пользователь включил анимацию, то она отображается, змейка встает на исходное место, и очки = определенному значению
+     * Иначе обычный старт, без анимации
+     * @since  0.4
+     */
     void start_anim_tick() {
         if (tick_tack.isRunning() && animation.isSelected()) {
             s.length = 2;
@@ -591,6 +675,10 @@ public class Main extends JPanel {
         } else start();
     }
 
+    /**
+     * Проверка на кол-во очков, и изменение лучшего результата, убирая или прибавляя пробелы
+     * @since  0.4
+     */
     void check_score() {
         if (col_score < 10)
             best_score_player.setText("                                                              Best Score: " + best_score);
@@ -602,6 +690,10 @@ public class Main extends JPanel {
             best_score_player.setText("                                                        Best Score: " + best_score);
     }
 
+    /**
+     * Проверка на длину змейки, и изменение лучшей длины, убирая или прибавляя пробелы
+     * @since  0.4
+     */
     void check_length() {
         if (col_score < 10)
             best_length_player.setText("                                                         Best Length: " + best_length);
@@ -611,18 +703,18 @@ public class Main extends JPanel {
             best_length_player.setText("                                                     Best Length: " + best_length);
     }
 
+    /**
+     * Генерирование яблока на поле, пока яблоко не будет на хвосте или другом яблоке
+     * @since  0.3
+     */
     void a_rerandom() {
         while (signal != 0) {
             signal = 1;
             for (int k = 0; k < s.length; k++)
-                if (s.snakeX[k] == a.posX && s.snakeY[k] == a.posY) {
-                    signal = 2;
-                    a.random();
-                } else if (a.posX == b.posX && a.posY == b.posY && two.isSelected() && two.isEnabled()) {
+                if ((s.snakeX[k] == a.posX && s.snakeY[k] == a.posY) || (a.posX == b.posX && a.posY == b.posY && two.isSelected() && two.isEnabled())) {
                     signal = 2;
                     a.random();
                 } else signal1++;
-
             if (signal != 2 && signal1 == s.length)
                 signal = 0;
             signal1 = 0;
@@ -630,18 +722,18 @@ public class Main extends JPanel {
         signal = 1;
     }
 
+    /**
+     * Генерирование яблока на поле, пока яблоко не будет на хвосте или другом яблоке
+     * @since  0.4
+     */
     void b_rerandom() {
         while (signal != 0) {
             signal = 1;
             for (int k = 0; k < s.length; k++)
-                if (s.snakeX[k] == b.posX && s.snakeY[k] == b.posY) {
-                    signal = 2;
-                    b.random();
-                } else if (b.posX == a.posX && b.posY == a.posY && two.isSelected() && two.isEnabled()) {
+                if ((s.snakeX[k] == b.posX && s.snakeY[k] == b.posY) || (b.posX == a.posX && b.posY == a.posY && two.isSelected() && two.isEnabled())) {
                     signal = 2;
                     b.random();
                 } else signal1++;
-
             if (signal != 2 && signal1 == s.length)
                 signal = 0;
             signal1 = 0;
@@ -649,6 +741,10 @@ public class Main extends JPanel {
         signal = 1;
     }
 
+    /**
+     * Если змейка касайтеся стены, то игра закончена
+     * @since  0.3
+     */
     void wall() {
         if (s.snakeX[0] > 19 || s.snakeX[0] < 0 || s.snakeY[0] > 19 || s.snakeY[0] < 0) {
             s.back();
@@ -660,6 +756,10 @@ public class Main extends JPanel {
         }
     }
 
+    /**
+     * Если змейка кусает хвост, то игра закончена
+     * @since  0.3
+     */
     void tail() {
         for (int d = s.length; d > 0; d--)
             if (s.snakeX[0] == s.snakeX[d] && s.snakeY[0] == s.snakeY[d]) {

@@ -25,7 +25,7 @@ public class Main extends JPanel {
     /**
      * Для паузы
      */
-    static int start_game = 0;
+    int start_game = 0;
 
     /**
      * Для генерации яблок
@@ -43,7 +43,7 @@ public class Main extends JPanel {
      */
     int lvl = 0;
 
-    static int col_score = 0;
+    int col_score = 0;
     int best_score = 0;
     int best_length = 0;
 
@@ -55,17 +55,17 @@ public class Main extends JPanel {
 
     static JMenuBar menu = new JMenuBar();
     JMenu file = new JMenu("File");
-    static JLabel score = new JLabel("2");
+    JLabel score = new JLabel("2");
     static JLabel pause = new JLabel("START");
     JMenuItem new_game = new JMenuItem("New game");
-    static JMenuItem exit = new JMenuItem("Exit");
+    JMenuItem exit = new JMenuItem("Exit");
     JMenu preferences = new JMenu("Preferences");
     JLabel game_mode = new JLabel("    Game Mode");
     JLabel difficulty = new JLabel("    Level Difficulty");
     JLabel modifications = new JLabel("    Modifications");
     static JLabel win = new JLabel("YOU WON");
-    JCheckBoxMenuItem teleport = new JCheckBoxMenuItem("Teleportation of Apple");
-    JCheckBoxMenuItem two = new JCheckBoxMenuItem("Two Apple");
+    JCheckBoxMenuItem teleport = new JCheckBoxMenuItem("Teleportation of Apple1");
+    JCheckBoxMenuItem two = new JCheckBoxMenuItem("Two Apple1");
     JRadioButtonMenuItem arcade = new JRadioButtonMenuItem("Arcade");
     JRadioButtonMenuItem classic = new JRadioButtonMenuItem("Classic");
     JRadioButtonMenuItem unlimited = new JRadioButtonMenuItem("Unlimited");
@@ -83,8 +83,8 @@ public class Main extends JPanel {
     JMenuItem about = new JMenuItem("About");
     static JLabel game_over = new JLabel("GAME OVER");
 
-    static Snake s = new Snake(10, 10, 9, 10);
-    Apple a = new Apple(new Random().nextInt(19), new Random().nextInt(19));
+    Snake1 s = new Snake1(10, 10, 9, 10);
+    Apple1 a = new Apple1(new Random().nextInt(19), new Random().nextInt(19));
     Apple2 b = new Apple2(new Random().nextInt(19), new Random().nextInt(19));
 
     /**
@@ -112,7 +112,7 @@ public class Main extends JPanel {
     Timer tick_tack = new Timer(1000, e -> game_over.setVisible(game_over.isVisible() ? false : true));
 
     /**
-     * Таймер до телепорта яблок, если активирована модификация - Teleportation of Apple
+     * Таймер до телепорта яблок, если активирована модификация - Teleportation of Apple1
      * @since 0.3
      */
     Timer teleporting = new Timer(SPEED_TELEPORT, e -> {
@@ -265,7 +265,7 @@ public class Main extends JPanel {
         JFrame f = new JFrame();
         f.add(game_over);
         f.add(win);
-        f.setTitle("Snake");
+        f.setTitle("Snake1");
         f.setSize(WIDTH * SCALE + 5 + OS, HEIGHT * SCALE + 49 + OS1);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setLocationRelativeTo(null);

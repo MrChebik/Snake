@@ -14,8 +14,8 @@ public class Snake1 implements Snake{
     /**
      * Максимальная длина по горизонтали и вертикали
      */
-    public final int snakeX[] = new int[200];
-    public final int snakeY[] = new int[200];
+    public final int snakeX[] = new int[400];
+    public final int snakeY[] = new int[400];
 
     Snake1(int x0, int y0, int x1, int y1) {
         snakeX[0] = x0;
